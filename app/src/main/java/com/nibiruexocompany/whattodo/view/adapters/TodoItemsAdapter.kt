@@ -5,13 +5,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
 import java.util.*
 import kotlin.collections.ArrayList
+import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 
 class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
-    class ViewHolder(context: Context, parent: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_todo, parent, false)) {
+    class ViewHolder(context: Context, parent: ViewGroup) : RecyclerView.ViewHolder(
+        LayoutInflater.from(context).inflate(
+            R.layout.item_todo,
+            parent,
+            false
+        )
+    ) {
         private var tvTask: TextView
         private var tvDate: TextView
 
@@ -30,7 +39,17 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
         }
     }
 
+    @Inject
+    lateinit var todoItemsSource: PublishSubject<TodoItem>
+
     private val todos = ArrayList<TodoItem>()
+
+    init {
+        App.daggerComponent.inject(this)
+        val disposable = todoItemsSource.subscribe {
+            addItem(it)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
@@ -44,7 +63,8 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
         holder.setDate(todos[position].date)
     }
 
-    fun addItem(item: TodoItem) {
+    private fun addItem(item: TodoItem) {
         todos.add(item)
+        this.notifyDataSetChanged()
     }
 }
