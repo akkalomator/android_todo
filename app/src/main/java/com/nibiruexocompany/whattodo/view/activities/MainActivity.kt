@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
 import com.nibiruexocompany.whattodo.view.utils.SwipeToDeleteCallback
@@ -12,15 +13,27 @@ import com.nibiruexocompany.whattodo.view.utils.TodoItemsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
+    @Inject
     lateinit var adapter: TodoItemsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        adapter = TodoItemsAdapter()
+
+        App.daggerComponent.inject(this)
+        
+        connectAdapterToRecyclerView()
+
+        fab.setOnClickListener {
+            startNewTaskActivity()
+        }
+    }
+
+    private fun connectAdapterToRecyclerView() {
         rvTodoItems.adapter = adapter
         rvTodoItems.layoutManager = LinearLayoutManager(this)
         val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback())
@@ -31,10 +44,6 @@ class MainActivity : AppCompatActivity() {
             .subscribe {
                 startEditTaskActivity(it)
             }
-
-        fab.setOnClickListener {
-            startNewTaskActivity()
-        }
     }
 
     private fun startNewTaskActivity() {

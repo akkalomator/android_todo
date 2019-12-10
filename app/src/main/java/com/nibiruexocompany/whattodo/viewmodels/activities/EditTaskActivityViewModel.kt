@@ -27,7 +27,4 @@ class EditTaskActivityViewModel : ViewModel() {
         mld.value = calendar
         mld
     }
-
-
-
 }

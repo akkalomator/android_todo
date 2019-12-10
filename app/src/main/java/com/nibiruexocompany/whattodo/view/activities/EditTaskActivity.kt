@@ -33,35 +33,27 @@ class EditTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_task)
 
-
-        Log.i("EditTaskActivity", DebugDB.getAddressLog())
-
         App.daggerComponent.inject(this)
 
-        viewModel = ViewModelProviders.of(this).get(EditTaskActivityViewModel::class.java)
+        initiateViewModel()
 
+        bindViewsListeners()
 
-        viewModel.startDate.observe(
-            this,
-            Observer {
-                etStartYear.setText(it.get(Calendar.YEAR).toString())
-                etStartMonth.setText((it.get(Calendar.MONTH) + 1).toString())
-                etStartDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
-                etStartHours.setText(it.get(Calendar.HOUR_OF_DAY).toString())
-                etStartMinutes.setText(it.get(Calendar.MINUTE).toString())
-            }
-        )
-        viewModel.endDate.observe(
-            this,
-            Observer {
-                etFinishYear.setText(it.get(Calendar.YEAR).toString())
-                etFinishMonth.setText((it.get(Calendar.MONTH) + 1).toString())
-                etFinishDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
-                etFinishHours.setText(it.get(Calendar.HOUR_OF_DAY).toString())
-                etFinishMinutes.setText(it.get(Calendar.MINUTE).toString())
-            }
-        )
+        if (intent.extras?.containsKey("item_id") == true) {
+            restoreData()
+        }
+    }
 
+    private fun restoreData() {
+        val itemId = intent.getIntExtra("item_id", 0)
+        item = todoItemsContainer.get(itemId)!!
+        viewModel.taskContent.value = item!!.content
+        viewModel.startDate.value = item!!.startDate
+        viewModel.endDate.value = item!!.endDate
+        etContent.setText(item!!.content)
+    }
+
+    private fun bindViewsListeners() {
         etStartDay.setOnClickListener {
             onStartDateRequired()
         }
@@ -105,15 +97,30 @@ class EditTaskActivity : AppCompatActivity() {
         etContent.doAfterTextChanged {
             viewModel.taskContent.value = etContent.text.toString()
         }
+    }
 
-        if (intent.extras?.containsKey("item_id") == true) {
-            val itemId = intent.getIntExtra("item_id", 0)
-            item = todoItemsContainer.get(itemId)!!
-            viewModel.taskContent.value = item!!.content
-            viewModel.startDate.value = item!!.startDate
-            viewModel.endDate.value = item!!.endDate
-            etContent.setText(item!!.content)
-        }
+    private fun initiateViewModel() {
+        viewModel = ViewModelProviders.of(this).get(EditTaskActivityViewModel::class.java)
+        viewModel.startDate.observe(
+            this,
+            Observer {
+                etStartYear.setText(it.get(Calendar.YEAR).toString())
+                etStartMonth.setText((it.get(Calendar.MONTH) + 1).toString())
+                etStartDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
+                etStartHours.setText(it.get(Calendar.HOUR_OF_DAY).toString())
+                etStartMinutes.setText(it.get(Calendar.MINUTE).toString())
+            }
+        )
+        viewModel.endDate.observe(
+            this,
+            Observer {
+                etFinishYear.setText(it.get(Calendar.YEAR).toString())
+                etFinishMonth.setText((it.get(Calendar.MONTH) + 1).toString())
+                etFinishDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
+                etFinishHours.setText(it.get(Calendar.HOUR_OF_DAY).toString())
+                etFinishMinutes.setText(it.get(Calendar.MINUTE).toString())
+            }
+        )
     }
 
     private fun onStartDateRequired() {
