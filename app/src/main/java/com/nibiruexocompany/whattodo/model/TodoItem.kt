@@ -3,7 +3,7 @@ package com.nibiruexocompany.whattodo.model
 import io.reactivex.subjects.PublishSubject
 import java.util.*
 
-class TodoItem(content: String, date: Date, isDone: Boolean) {
+class TodoItem(content: String, startDate: Calendar, endDate: Calendar) {
     val dataChanged = PublishSubject.create<Unit>()
 
     var content: String = content
@@ -12,15 +12,21 @@ class TodoItem(content: String, date: Date, isDone: Boolean) {
             dataChanged.onNext(Unit)
         }
 
-    var date: Date = date
+    var startDate: Calendar = startDate
         set(value) {
             field = value
             dataChanged.onNext(Unit)
         }
 
-    var isDone: Boolean = isDone
-    set(value) {
-        field = value
-        dataChanged.onNext(Unit)
-    }
+    var endDate: Calendar = endDate
+        set(value) {
+            field = value
+            dataChanged.onNext(Unit)
+        }
+
+    var isDone: Boolean = false
+        set(value) {
+            field = value
+            dataChanged.onNext(Unit)
+        }
 }

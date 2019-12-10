@@ -50,7 +50,7 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
                 itemView.setBackgroundColor(context.getColor(R.color.colorPrimary))
             }
             tvTask.text = item.content
-            tvDate.text = item.date.toString()
+            tvDate.text = item.startDate.toString()
         }
     }
 
