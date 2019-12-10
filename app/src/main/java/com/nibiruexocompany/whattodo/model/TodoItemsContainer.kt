@@ -35,4 +35,7 @@ class TodoItemsContainer {
         itemDeleted.onNext(item)
         item.dataChanged.onComplete()
     }
+
+    fun completedTasksCount() = items.count { it.isDone }
+    fun totalTasksCount() = items.size
 }

@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
+import com.nibiruexocompany.whattodo.model.TodoItemsContainer
 import com.nibiruexocompany.whattodo.view.utils.SwipeToDeleteCallback
 import com.nibiruexocompany.whattodo.view.utils.TodoItemsAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -20,17 +22,35 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var adapter: TodoItemsAdapter
 
+    @Inject
+    lateinit var todoItemsContainer: TodoItemsContainer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         App.daggerComponent.inject(this)
-        
+
         connectAdapterToRecyclerView()
 
         fab.setOnClickListener {
             startNewTaskActivity()
         }
+
+        val disposable = todoItemsContainer
+            .itemsSource
+            .mergeWith(todoItemsContainer.itemDeleted)
+            .mergeWith(todoItemsContainer.itemChanged)
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                onItemsChanged()
+            }
+    }
+
+    private fun onItemsChanged() {
+        pbCompleted.progress =
+            (todoItemsContainer.completedTasksCount().toDouble() / todoItemsContainer.totalTasksCount() * 100).toInt()
     }
 
     private fun connectAdapterToRecyclerView() {
