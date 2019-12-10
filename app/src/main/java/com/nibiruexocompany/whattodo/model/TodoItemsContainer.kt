@@ -14,12 +14,20 @@ class TodoItemsContainer {
         App.daggerComponent.inject(this)
     }
 
+    fun get(id: Int) = items.find { it.id == id }
+
     fun addItem(item: TodoItem) {
         items.add(item)
         itemsSource.onNext(item)
         val disposable = item.dataChanged.subscribe {
             itemChanged.onNext(item)
         }
+    }
+
+    fun replaceItem(item: TodoItem) {
+        val index = items.indexOfFirst { it.id == item.id }
+        items[index] = item
+        itemChanged.onNext(item)
     }
 
     fun deleteItem(item: TodoItem) {

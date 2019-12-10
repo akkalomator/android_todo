@@ -2,6 +2,7 @@ package com.nibiruexocompany.whattodo.view.utils
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
@@ -12,12 +13,13 @@ import com.nibiruexocompany.whattodo.model.TodoItem
 import com.nibiruexocompany.whattodo.model.TodoItemsContainer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import java.util.*
 import kotlin.collections.ArrayList
 import javax.inject.Inject
 
-class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolder>() {
-    inner class ItemTaskViewHolder(private val context: Context, parent: ViewGroup) :
+class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolder>(){
+    inner class ItemTaskViewHolder(private val context: Context, parent: ViewGroup):
         RecyclerView.ViewHolder(
             LayoutInflater.from(context).inflate(
                 R.layout.item_todo,
@@ -63,6 +65,8 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
     @Inject
     lateinit var todoItemsContainer: TodoItemsContainer
 
+    val itemChangeRequired = PublishSubject.create<TodoItem>()
+
     private var todos: MutableList<TodoItem> = ArrayList()
 
     init {
@@ -102,7 +106,11 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
     override fun getItemCount(): Int = todos.size
 
     override fun onBindViewHolder(holderItemTask: ItemTaskViewHolder, position: Int) {
-        holderItemTask.setState(todos[position])
+        val item = todos[position]
+        holderItemTask.setState(item)
+        holderItemTask.itemView.setOnClickListener {
+            itemChangeRequired.onNext(item)
+        }
     }
 }
 

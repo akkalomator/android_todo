@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.amitshekhar.DebugDB
@@ -26,15 +27,19 @@ class EditTaskActivity : AppCompatActivity() {
     @Inject
     lateinit var todoItemsContainer: TodoItemsContainer
 
+    private var item: TodoItem? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_task)
+
 
         Log.i("EditTaskActivity", DebugDB.getAddressLog())
 
         App.daggerComponent.inject(this)
 
         viewModel = ViewModelProviders.of(this).get(EditTaskActivityViewModel::class.java)
+
 
         viewModel.startDate.observe(
             this,
@@ -95,6 +100,19 @@ class EditTaskActivity : AppCompatActivity() {
         bSave.setOnClickListener {
             saveTodo()
             finish()
+        }
+
+        etContent.doAfterTextChanged {
+            viewModel.taskContent.value = etContent.text.toString()
+        }
+
+        if (intent.extras?.containsKey("item_id") == true) {
+            val itemId = intent.getIntExtra("item_id", 0)
+            item = todoItemsContainer.get(itemId)!!
+            viewModel.taskContent.value = item!!.content
+            viewModel.startDate.value = item!!.startDate
+            viewModel.endDate.value = item!!.endDate
+            etContent.setText(item!!.content)
         }
     }
 
@@ -179,8 +197,15 @@ class EditTaskActivity : AppCompatActivity() {
     }
 
     private fun saveTodo() {
+        if (item != null) {
+            item!!.content = viewModel.taskContent.value!!
+            item!!.startDate = viewModel.startDate.value
+            item!!.endDate = viewModel.endDate.value
+            todoItemsContainer.replaceItem(item!!)
+            return
+        }
         val item = TodoItem(
-            content = etContent.text.toString(),
+            content = viewModel.taskContent.value!!,
             startDate = viewModel.startDate.value,
             endDate = viewModel.endDate.value
         )
