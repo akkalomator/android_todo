@@ -1,7 +1,6 @@
-package com.nibiruexocompany.whattodo.view.adapters
+package com.nibiruexocompany.whattodo.view.utils
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -11,23 +10,26 @@ import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
 import com.nibiruexocompany.whattodo.model.TodoItemsContainer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.ArrayList
 import javax.inject.Inject
 
 class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
-    inner class ViewHolder(private val context: Context, parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(context).inflate(
-            R.layout.item_todo,
-            parent,
-            false
-        )
-    ) {
+    inner class ViewHolder(private val context: Context, parent: ViewGroup) :
+        RecyclerView.ViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.item_todo,
+                parent,
+                false
+            )
+        ) {
         private var cbIsDone: CheckBox
         private var tvTask: TextView
         private var tvDate: TextView
 
-        private lateinit var item: TodoItem
+        lateinit var item: TodoItem
 
         init {
             val view = itemView
@@ -52,26 +54,44 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
             }
             tvTask.text = item.content
             val startDate = item.startDate
-            tvDate.text = "${startDate!!.get(Calendar.DAY_OF_MONTH)}.${startDate!!.get(Calendar.MONTH) + 1}.${startDate!!.get(Calendar.YEAR)}"
+            tvDate.text =
+                """${startDate!!.get(Calendar.HOUR_OF_DAY)}:${startDate!!.get(Calendar.MINUTE)}
+                    ${startDate!!.get(Calendar.DAY_OF_MONTH)}.${startDate!!.get(Calendar.MONTH) + 1}}"""
         }
     }
 
     @Inject
-    lateinit var items: TodoItemsContainer
+    lateinit var todoItemsContainer: TodoItemsContainer
 
-    private var todos: List<TodoItem> = ArrayList()
-
-    private val TAG = "TodoItemsAdapter"
+    private var todos: MutableList<TodoItem> = ArrayList()
 
     init {
         App.daggerComponent.inject(this)
-        val disposable = items.itemsDistributor.subscribe({
-            todos = it
-            notifyDataSetChanged()
-        }, {
-            Log.e(TAG, it.localizedMessage!!)
-        })
-
+        val disposable = todoItemsContainer
+            .itemsSource
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                todos.add(it)
+                notifyDataSetChanged()
+            }
+        val disposable2 = todoItemsContainer
+            .itemChanged
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { changedItem ->
+                val index = todos.indexOfFirst { it.id == changedItem.id }
+                todos[index] = changedItem
+                notifyDataSetChanged()
+            }
+        val disposable3 = todoItemsContainer
+            .itemDeleted
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                todos.remove(it)
+                notifyDataSetChanged()
+            }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -85,3 +105,4 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
         holder.setState(todos[position])
     }
 }
+

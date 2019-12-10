@@ -2,13 +2,13 @@ package com.nibiruexocompany.whattodo.model
 
 import com.nibiruexocompany.whattodo.App
 import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 
 class TodoItemsContainer {
-    private var items: MutableList<TodoItem> = ArrayList()
+    private val items: MutableList<TodoItem> = ArrayList()
 
-    @Inject
-    lateinit var itemsDistributor: PublishSubject<List<TodoItem>>
+    val itemsSource: PublishSubject<TodoItem> = PublishSubject.create()
+    val itemChanged: PublishSubject<TodoItem> = PublishSubject.create()
+    val itemDeleted: PublishSubject<TodoItem> = PublishSubject.create()
 
     init {
         App.daggerComponent.inject(this)
@@ -16,9 +16,15 @@ class TodoItemsContainer {
 
     fun addItem(item: TodoItem) {
         items.add(item)
-        itemsDistributor.onNext(items)
+        itemsSource.onNext(item)
         val disposable = item.dataChanged.subscribe {
-            itemsDistributor.onNext(items)
+            itemChanged.onNext(item)
         }
+    }
+
+    fun deleteItem(item: TodoItem) {
+        items.remove(item)
+        itemDeleted.onNext(item)
+        item.dataChanged.onComplete()
     }
 }

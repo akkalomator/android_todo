@@ -4,9 +4,11 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.amitshekhar.DebugDB
 import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
@@ -27,6 +29,8 @@ class EditTaskActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_task)
+
+        Log.i("EditTaskActivity", DebugDB.getAddressLog())
 
         App.daggerComponent.inject(this)
 
@@ -176,9 +180,9 @@ class EditTaskActivity : AppCompatActivity() {
 
     private fun saveTodo() {
         val item = TodoItem(
-            etContent.text.toString(),
-            viewModel.startDate.value,
-            viewModel.endDate.value
+            content = etContent.text.toString(),
+            startDate = viewModel.startDate.value,
+            endDate = viewModel.endDate.value
         )
         todoItemsContainer.addItem(item)
     }

@@ -3,9 +3,11 @@ package com.nibiruexocompany.whattodo.view.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nibiruexocompany.whattodo.R
-import com.nibiruexocompany.whattodo.view.adapters.TodoItemsAdapter
+import com.nibiruexocompany.whattodo.view.utils.SwipeToDeleteCallback
+import com.nibiruexocompany.whattodo.view.utils.TodoItemsAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         adapter = TodoItemsAdapter()
         rvTodoItems.adapter = adapter
         rvTodoItems.layoutManager = LinearLayoutManager(this)
+        val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback())
+        itemTouchHelper.attachToRecyclerView(rvTodoItems)
 
         fab.setOnClickListener {
             startNewTaskActivity()
