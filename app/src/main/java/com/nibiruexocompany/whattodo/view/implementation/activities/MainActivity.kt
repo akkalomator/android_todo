@@ -1,4 +1,4 @@
-package com.nibiruexocompany.whattodo.view
+package com.nibiruexocompany.whattodo.view.implementation.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
