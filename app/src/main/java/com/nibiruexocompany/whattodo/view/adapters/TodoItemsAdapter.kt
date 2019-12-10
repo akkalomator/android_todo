@@ -11,6 +11,7 @@ import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
 import com.nibiruexocompany.whattodo.model.TodoItemsContainer
+import java.util.*
 import kotlin.collections.ArrayList
 import javax.inject.Inject
 
@@ -50,7 +51,8 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
                 itemView.setBackgroundColor(context.getColor(R.color.colorPrimary))
             }
             tvTask.text = item.content
-            tvDate.text = item.startDate.toString()
+            val startDate = item.startDate
+            tvDate.text = "${startDate!!.get(Calendar.DAY_OF_MONTH)}.${startDate!!.get(Calendar.MONTH) + 1}.${startDate!!.get(Calendar.YEAR)}"
         }
     }
 

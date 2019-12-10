@@ -2,4 +2,14 @@
     <string name="app_name">What to do</string>
     <string name="todo_task_placeholder">Task</string>
     <string name="todo_string_placeholder">Date</string>
+    <string name="tv_content">Content</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="day">Day</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="start">Start</string>
+    <string name="finish">End</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
 </resources>

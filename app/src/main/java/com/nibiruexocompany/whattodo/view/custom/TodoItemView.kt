@@ -1,4 +1,4 @@
-package com.nibiruexocompany.whattodo.view.implementation.custom
+package com.nibiruexocompany.whattodo.view.custom
 
 import android.content.Context
 import android.util.AttributeSet
