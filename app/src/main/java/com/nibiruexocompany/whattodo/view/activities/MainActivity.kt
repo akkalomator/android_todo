@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
@@ -56,8 +57,19 @@ class MainActivity : AppCompatActivity() {
     private fun connectAdapterToRecyclerView() {
         rvTodoItems.adapter = adapter
         rvTodoItems.layoutManager = LinearLayoutManager(this)
+        rvTodoItems.setHasFixedSize(true)
         val itemTouchHelper = ItemTouchHelper(SwipeToDeleteCallback())
         itemTouchHelper.attachToRecyclerView(rvTodoItems)
+        rvTodoItems.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    fab.hide()
+                } else {
+                    fab.show()
+                }
+            }
+        })
         val disposable = adapter.itemChangeRequired
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())

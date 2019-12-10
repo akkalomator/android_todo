@@ -2,7 +2,6 @@ package com.nibiruexocompany.whattodo.view.utils
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
@@ -14,6 +13,7 @@ import com.nibiruexocompany.whattodo.model.TodoItemsContainer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import javax.inject.Inject
@@ -50,15 +50,15 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
             this.item = item
             cbIsDone.isChecked = item.isDone
             if (item.isDone) {
-                itemView.setBackgroundColor(context.getColor(R.color.colorPrimaryDark))
+                itemView.setBackgroundColor(context.getColor(R.color.colorPrimaryLight))
             } else {
-                itemView.setBackgroundColor(context.getColor(R.color.colorPrimary))
+                itemView.background = context.getDrawable(R.drawable.bordered_view)
             }
             tvTask.text = item.content
-            val startDate = item.startDate
-            tvDate.text =
-                """${startDate!!.get(Calendar.HOUR_OF_DAY)}:${startDate!!.get(Calendar.MINUTE)}
-                    ${startDate!!.get(Calendar.DAY_OF_MONTH)}.${startDate!!.get(Calendar.MONTH) + 1}}"""
+
+            val startDate = item.startDate!!.time
+            val stringDate = SimpleDateFormat("dd.MM\nHH:mm", Locale.getDefault()).format(startDate)
+            tvDate.text = stringDate
         }
     }
 
@@ -66,6 +66,7 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
     lateinit var todoItemsContainer: TodoItemsContainer
 
     val itemChangeRequired = PublishSubject.create<TodoItem>()
+    val itemDetailsRequired = PublishSubject.create<TodoItem>()
 
     private var todos: MutableList<TodoItem> = ArrayList()
 
@@ -92,9 +93,10 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
             .itemDeleted
             .subscribeOn(Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                todos.remove(it)
-                notifyDataSetChanged()
+            .subscribe { itemToDelete ->
+                val position = todos.indexOfFirst { it == itemToDelete }
+                todos.remove(itemToDelete)
+                notifyItemRemoved(position)
             }
     }
 
@@ -109,7 +111,11 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
         val item = todos[position]
         holderItemTask.setState(item)
         holderItemTask.itemView.setOnClickListener {
+            itemDetailsRequired.onNext(item)
+        }
+        holderItemTask.itemView.setOnLongClickListener {
             itemChangeRequired.onNext(item)
+            true
         }
     }
 }

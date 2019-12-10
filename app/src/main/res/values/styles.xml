@@ -8,12 +8,26 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TodoTaskStyle" parent="Widget.AppCompat.ListView" >
+    <style name="CheckboxTaskCheck" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:buttonTint">@color/colorAccent</item>
+    </style>
+
+    <style name="TodoItemStyle">
+        <item name="android:background">@drawable/bordered_view</item>
+    </style>
+
+    <style name="TodoContentStyle" parent="Widget.AppCompat.ListView" >
         <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
     <style name="TodoDateStyle" parent="Widget.AppCompat.ListView" >
         <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+    </style>
+
+    <style name="MainActivityStyle">
+        <item name="android:background">@color/primaryBackground</item>
     </style>
 
 </resources>
