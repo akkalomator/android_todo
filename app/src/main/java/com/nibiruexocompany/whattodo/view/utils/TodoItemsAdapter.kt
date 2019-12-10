@@ -16,8 +16,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 import javax.inject.Inject
 
-class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
-    inner class ViewHolder(private val context: Context, parent: ViewGroup) :
+class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolder>() {
+    inner class ItemTaskViewHolder(private val context: Context, parent: ViewGroup) :
         RecyclerView.ViewHolder(
             LayoutInflater.from(context).inflate(
                 R.layout.item_todo,
@@ -94,15 +94,15 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ViewHolder>() {
             }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemTaskViewHolder {
         val context = parent.context
-        return ViewHolder(context, parent)
+        return ItemTaskViewHolder(context, parent)
     }
 
     override fun getItemCount(): Int = todos.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setState(todos[position])
+    override fun onBindViewHolder(holderItemTask: ItemTaskViewHolder, position: Int) {
+        holderItemTask.setState(todos[position])
     }
 }
 

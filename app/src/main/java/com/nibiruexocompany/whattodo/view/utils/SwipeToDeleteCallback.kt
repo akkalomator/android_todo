@@ -24,7 +24,7 @@ class SwipeToDeleteCallback : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        val viewHolder = viewHolder as TodoItemsAdapter.ViewHolder
+        val viewHolder = viewHolder as TodoItemsAdapter.ItemTaskViewHolder
         todoItemsContainer.deleteItem(viewHolder.item)
     }
 }
