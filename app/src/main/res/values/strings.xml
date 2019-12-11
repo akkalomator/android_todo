@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">What to do</string>
+    <string name="todo_task_placeholder">Task</string>
+    <string name="todo_string_placeholder">Date</string>
+    <string name="tv_content">Content</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="day">Day</string>
+    <string name="month">M</string>
+    <string name="year">Year</string>
+    <string name="start">Start</string>
+    <string name="finish">End</string>
+    <string name="start_time">Start time</string>
+    <string name="minutes">mm</string>
+    <string name="content_hint">What to do?</string>
+    <string name="finish_time">Finish time</string>
 </resources>

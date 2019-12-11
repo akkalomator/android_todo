@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ActivityStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llSubmitButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tvContent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/bCancel"
+            style="@style/EditTaskActivitySubmitButton"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="50"
+            android:text="Cancel"
+            app:layout_constraintBottom_toTopOf="@+id/tvContent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/bSave"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/bSave"
+            style="@style/EditTaskActivitySubmitButton"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_weight="50"
+            android:text="Save"
+            app:layout_constraintBottom_toBottomOf="@id/bCancel"
+            app:layout_constraintLeft_toRightOf="@id/bCancel"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/bCancel" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:id="@+id/tvContent"
+            style="@style/EditTaskActivityGroupHeaderTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_content"
+            app:layout_constraintBottom_toTopOf="@id/etContent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etContent"
+            style="@style/EditTaskActivityFieldEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/content_hint"
+            app:layout_constraintBottom_toTopOf="@id/tvStartTime"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvContent" />
+
+        <TextView
+            android:id="@+id/tvStartTime"
+            style="@style/EditTaskActivityGroupHeaderTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/start"
+            app:layout_constraintBottom_toTopOf="@id/llStartDate"
+            app:layout_constraintHorizontal_weight="50"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tvFinishTime"
+            app:layout_constraintTop_toBottomOf="@id/etContent" />
+
+        <LinearLayout
+            android:id="@+id/llStartDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/etStartTime"
+            app:layout_constraintHorizontal_weight="50"
+            app:layout_constraintLeft_toLeftOf="@id/tvStartTime"
+            app:layout_constraintRight_toRightOf="@id/tvStartTime"
+            app:layout_constraintTop_toBottomOf="@id/tvStartTime">
+
+            <EditText
+                android:id="@+id/etStartYear"
+                style="@style/EditTaskActivityFieldEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/year" />
+
+            <EditText
+                android:id="@+id/etStartMonth"
+                style="@style/EditTaskActivityFieldEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/month" />
+
+            <EditText
+                android:id="@+id/etStartDay"
+                style="@style/EditTaskActivityFieldEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/day" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etStartTime"
+            style="@style/EditTaskActivityFieldEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:gravity="center"
+            android:hint="@string/start_time"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tvStartTime"
+            app:layout_constraintRight_toRightOf="@id/llStartDate"
+            app:layout_constraintTop_toBottomOf="@id/llStartDate" />
+
+        <TextView
+            android:id="@+id/tvFinishTime"
+            style="@style/EditTaskActivityGroupHeaderTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/finish"
+            app:layout_constraintBottom_toBottomOf="@id/tvStartTime"
+            app:layout_constraintHorizontal_weight="50"
+            app:layout_constraintLeft_toRightOf="@id/tvStartTime"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvStartTime" />
+
+        <LinearLayout
+            android:id="@+id/llFinishDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/llStartDate"
+            app:layout_constraintLeft_toRightOf="@id/llStartDate"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/llStartDate">
+
+            <EditText
+                android:id="@+id/etFinishYear"
+                style="@style/EditTaskActivityFieldEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/year" />
+
+            <EditText
+                android:id="@+id/etFinishMonth"
+                style="@style/EditTaskActivityFieldEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/month" />
+
+            <EditText
+                android:id="@+id/etFinishDay"
+                style="@style/EditTaskActivityFieldEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/day" />
+        </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/etFinishTime"
+            style="@style/EditTaskActivityFieldEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:gravity="center"
+            android:hint="@string/finish_time"
+            app:layout_constraintBottom_toBottomOf="@id/etStartTime"
+            app:layout_constraintHorizontal_weight="50"
+            app:layout_constraintLeft_toRightOf="@id/etStartTime"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/etStartTime" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
