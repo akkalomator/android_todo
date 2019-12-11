@@ -3,11 +3,9 @@ package com.nibiruexocompany.whattodo.model
 import io.reactivex.subjects.PublishSubject
 import java.util.*
 
-class TodoItem(val id: Int = TodoItem.id++, content: String, startDate: Calendar?, endDate: Calendar?) {
+class TodoItem(content: String, startDate: Calendar?, endDate: Calendar?) {
 
-    companion object {
-        var id: Int = 0
-    }
+    var id: Long = 0
 
     val dataChanged = PublishSubject.create<Unit>()
 

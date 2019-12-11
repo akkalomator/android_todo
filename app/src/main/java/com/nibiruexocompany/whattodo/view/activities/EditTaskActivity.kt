@@ -45,7 +45,7 @@ class EditTaskActivity : AppCompatActivity() {
     }
 
     private fun restoreData() {
-        val itemId = intent.getIntExtra("item_id", 0)
+        val itemId = intent.getLongExtra("item_id", 0)
         item = todoItemsContainer.get(itemId)!!
         viewModel.taskContent.value = item!!.content
         viewModel.startDate.value = item!!.startDate
@@ -146,10 +146,10 @@ class EditTaskActivity : AppCompatActivity() {
     private fun onEndDateRequired() {
         val subject = PublishSubject.create<Calendar>()
         val disposable = subject.subscribe {
-            val newInfo = viewModel.endDate.value
-            newInfo?.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR))
-            newInfo?.set(Calendar.MONTH, it.get(Calendar.MONTH))
-            newInfo?.set(Calendar.YEAR, it.get(Calendar.YEAR))
+            val newInfo = viewModel.endDate.value ?: Calendar.getInstance()
+            newInfo.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR))
+            newInfo.set(Calendar.MONTH, it.get(Calendar.MONTH))
+            newInfo.set(Calendar.YEAR, it.get(Calendar.YEAR))
             viewModel.endDate.value = newInfo
         }
         sendDateRequestToUser(viewModel.endDate.value, subject)

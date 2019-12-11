@@ -6,6 +6,7 @@ import io.reactivex.subjects.PublishSubject
 class TodoItemsContainer {
     private val items: MutableList<TodoItem> = ArrayList()
 
+    val itemsSet: PublishSubject<List<TodoItem>> = PublishSubject.create()
     val itemsSource: PublishSubject<TodoItem> = PublishSubject.create()
     val itemChanged: PublishSubject<TodoItem> = PublishSubject.create()
     val itemDeleted: PublishSubject<TodoItem> = PublishSubject.create()
@@ -14,7 +15,13 @@ class TodoItemsContainer {
         App.daggerComponent.inject(this)
     }
 
-    fun get(id: Int) = items.find { it.id == id }
+    fun setItems(items: List<TodoItem>) {
+        this.items.addAll(items)
+        items.forEach { item -> item.dataChanged.subscribe { itemChanged.onNext(item) } }
+        itemsSet.onNext(items)
+    }
+
+    fun get(id: Long) = items.find { it.id == id }
 
     fun addItem(item: TodoItem) {
         items.add(item)

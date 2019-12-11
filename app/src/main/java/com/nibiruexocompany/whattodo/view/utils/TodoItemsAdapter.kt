@@ -98,6 +98,14 @@ class TodoItemsAdapter : RecyclerView.Adapter<TodoItemsAdapter.ItemTaskViewHolde
                 todos.remove(itemToDelete)
                 notifyItemRemoved(position)
             }
+        val disposable4 = todoItemsContainer
+            .itemsSet
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                todos.addAll(it)
+                notifyDataSetChanged()
+            }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemTaskViewHolder {
