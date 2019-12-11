@@ -5,5 +5,8 @@
     <color name="colorPrimaryLight">#0E0E0E</color>
     <color name="colorAccent">#D81B60</color>
     <color name="primaryBackground">#121212</color>
-    <color name="primaryTextColor">#D0D0D0</color>
+    <color name="primaryTextColor">#C7C7C7</color>
+    <color name="submitButtonColor">#1F1F1F</color>
+    <color name="transparent">#00000000</color>
+    <color name="hintColor">#404040</color>
 </resources>

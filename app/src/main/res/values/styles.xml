@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/hintColor</item>
     </style>
 
     <style name="CheckboxTaskCheck" parent="Widget.AppCompat.CompoundButton.CheckBox">
@@ -16,18 +17,37 @@
         <item name="android:background">@drawable/bordered_view</item>
     </style>
 
-    <style name="TodoContentStyle" parent="Widget.AppCompat.ListView" >
-        <item name="android:textSize">30sp</item>
+    <style name="TodoContentStyle" parent="Widget.AppCompat.ListView">
+        <item name="android:textSize">@dimen/defaultFontSize</item>
         <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TodoDateStyle" parent="Widget.AppCompat.ListView" >
-        <item name="android:textSize">20sp</item>
+    <style name="TodoDateStyle" parent="Widget.AppCompat.ListView">
+        <item name="android:textSize">@dimen/smallerFontSize</item>
         <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="MainActivityStyle">
+    <style name="ActivityStyle">
         <item name="android:background">@color/primaryBackground</item>
+    </style>
+
+    <style name="EditTaskActivitySubmitButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@color/submitButtonColor</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textSize">@dimen/mediumFontSize</item>
+    </style>
+
+    <style name="EditTaskActivityGroupHeaderTextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/smallestFontSize</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+    </style>
+
+    <style name="EditTaskActivityFieldEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">@dimen/mediumFontSize</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/colorAccent</item>
     </style>
 
 </resources>

@@ -4,12 +4,10 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.amitshekhar.DebugDB
 import com.nibiruexocompany.whattodo.App
 import com.nibiruexocompany.whattodo.R
 import com.nibiruexocompany.whattodo.model.TodoItem
@@ -17,6 +15,8 @@ import com.nibiruexocompany.whattodo.model.TodoItemsContainer
 import com.nibiruexocompany.whattodo.viewmodels.activities.EditTaskActivityViewModel
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_edit_task.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -74,20 +74,13 @@ class EditTaskActivity : AppCompatActivity() {
             onEndDateRequired()
         }
 
-        etStartHours.setOnClickListener {
-            onStartTimeRequired()
-        }
-        etStartMinutes.setOnClickListener {
+        etStartTime.setOnClickListener {
             onStartTimeRequired()
         }
 
-        etFinishHours.setOnClickListener {
+        etFinishTime.setOnClickListener {
             onFinishTimeRequired()
         }
-        etFinishMinutes.setOnClickListener {
-            onFinishTimeRequired()
-        }
-
         bCancel.setOnClickListener { finish() }
         bSave.setOnClickListener {
             saveTodo()
@@ -107,18 +100,22 @@ class EditTaskActivity : AppCompatActivity() {
                 etStartYear.setText(it.get(Calendar.YEAR).toString())
                 etStartMonth.setText((it.get(Calendar.MONTH) + 1).toString())
                 etStartDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
-                etStartHours.setText(it.get(Calendar.HOUR_OF_DAY).toString())
-                etStartMinutes.setText(it.get(Calendar.MINUTE).toString())
+
+                val time = SimpleDateFormat("hh:mm", Locale.getDefault()).format(it.time)
+                etStartTime.setText(time)
             }
         )
         viewModel.endDate.observe(
             this,
             Observer {
-                etFinishYear.setText(it.get(Calendar.YEAR).toString())
-                etFinishMonth.setText((it.get(Calendar.MONTH) + 1).toString())
-                etFinishDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
-                etFinishHours.setText(it.get(Calendar.HOUR_OF_DAY).toString())
-                etFinishMinutes.setText(it.get(Calendar.MINUTE).toString())
+                if (it != null) {
+                    etFinishYear.setText(it.get(Calendar.YEAR).toString())
+                    etFinishMonth.setText((it.get(Calendar.MONTH) + 1).toString())
+                    etFinishDay.setText(it.get(Calendar.DAY_OF_MONTH).toString())
+
+                    val time = SimpleDateFormat("hh:mm", Locale.getDefault()).format(it.time)
+                    etFinishTime.setText(time)
+                }
             }
         )
     }
@@ -149,28 +146,29 @@ class EditTaskActivity : AppCompatActivity() {
     private fun onEndDateRequired() {
         val subject = PublishSubject.create<Calendar>()
         val disposable = subject.subscribe {
-            val newInfo = viewModel.endDate.value!!
-            newInfo.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR))
-            newInfo.set(Calendar.MONTH, it.get(Calendar.MONTH))
-            newInfo.set(Calendar.YEAR, it.get(Calendar.YEAR))
+            val newInfo = viewModel.endDate.value
+            newInfo?.set(Calendar.DAY_OF_YEAR, it.get(Calendar.DAY_OF_YEAR))
+            newInfo?.set(Calendar.MONTH, it.get(Calendar.MONTH))
+            newInfo?.set(Calendar.YEAR, it.get(Calendar.YEAR))
             viewModel.endDate.value = newInfo
         }
-        sendDateRequestToUser(viewModel.endDate.value!!, subject)
+        sendDateRequestToUser(viewModel.endDate.value, subject)
     }
 
     private fun onFinishTimeRequired() {
         val subject = PublishSubject.create<Calendar>()
         val disposable = subject.subscribe {
-            val newInfo = viewModel.endDate.value!!
+            val newInfo = viewModel.endDate.value ?: Calendar.getInstance()
             newInfo.set(Calendar.HOUR_OF_DAY, it.get(Calendar.HOUR_OF_DAY))
             newInfo.set(Calendar.MINUTE, it.get(Calendar.MINUTE))
             viewModel.endDate.value = newInfo
         }
-        sendTimeRequestToUser(viewModel.endDate.value!!, subject)
+        sendTimeRequestToUser(viewModel.endDate.value, subject)
     }
 
-    private fun sendTimeRequestToUser(fromTime: Calendar, stream: PublishSubject<Calendar>) {
-        val hour = fromTime.get(Calendar.HOUR_OF_DAY)
+    private fun sendTimeRequestToUser(fromTime: Calendar?, stream: PublishSubject<Calendar>) {
+        val calendar = fromTime ?: Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val timePickerDialog = TimePickerDialog(
             this, TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 val response = Calendar.getInstance()
@@ -183,10 +181,11 @@ class EditTaskActivity : AppCompatActivity() {
         timePickerDialog.show()
     }
 
-    private fun sendDateRequestToUser(fromDate: Calendar, stream: PublishSubject<Calendar>) {
-        val year = fromDate.get(Calendar.YEAR)
-        val month = fromDate.get(Calendar.MONTH)
-        val day = fromDate.get(Calendar.DAY_OF_MONTH)
+    private fun sendDateRequestToUser(fromDate: Calendar?, stream: PublishSubject<Calendar>) {
+        val calendar = fromDate ?: Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
         val datePickerDialog = DatePickerDialog(
             this,
             OnDateSetListener { _, year, monthOfYear, dayOfMonth ->

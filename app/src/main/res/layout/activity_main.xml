@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.activities.MainActivity"
-    style="@style/MainActivityStyle">
+    style="@style/ActivityStyle">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
